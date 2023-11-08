@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-""" Basic Authentication Module for the API """
+"""Basic authentication module for the API."""
+
 from .auth import Auth
 
 
 class BasicAuth(Auth):
-    """Basic Authentication class"""
-    pass
+    """Basic authentication class."""
