@@ -5,6 +5,8 @@ import re
 from typing import List
 import typing
 
+PII_FIELDS = ("name", "emaail", "password", "ssn", "password")
+
 
 def filter_datum(fields: List[str], redaction: str,
                  message: str, separator: str) -> str:
@@ -22,6 +24,7 @@ class RedactingFormatter(logging.Formatter):
     REDACTION = "***"
     FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
     SEPARATOR = ";"
+    FIELDS_FORMAT = "({})".format('|'.join(PII_FIELDS))
 
     def __init__(self, fields: typing.List[str]):
         self.fields = fields
@@ -30,5 +33,17 @@ class RedactingFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         """ filter values in incoming log records using filter_datum
             """
-        return filter_datum(self.fields, self.REDACTION,
-                            super().format(record), self.SEPARATOR)
+        return filter_datum(self.FIELDS_FORMAT, self.REDACTION,
+                            super(RedactingFormatter).format(record),
+                            self.SEPARATOR)
+
+
+def get_logger(self) -> logging.Logger:
+    "returns logging.Logger object"
+    user_data = logging.Logger
+    user_data.setLevel(logging.INFO)
+    user_data.propagate = False
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(self)
+    user_data.addHandler(stream_handler)
+    return user_data
