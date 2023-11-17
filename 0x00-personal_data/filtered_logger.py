@@ -4,6 +4,8 @@ import logging
 import re
 from typing import List
 import typing
+import mysql.connector
+import os
 
 PII_FIELDS = ("name", "email", "password", "ssn", "phone")
 
@@ -38,12 +40,11 @@ class RedactingFormatter(logging.Formatter):
                             self.SEPARATOR)
 
 
-def get_logger(self) -> logging.Logger:
-    "returns logging.Logger object"
-    logger = logging.getLogger('user_data')
-    logger.setLevel(logging.INFO)
-    logger.propagate = False
-    handler = logging.StreamHandler()
-    handler.setFormatter(RedactingFormatter(PII_FIELDS))
-    logger.addHandler(handler)
-    return logger
+def get_db(self) -> mysql.connector.connection.MySQLConnection:
+    """returns a MySQLConnection object"""
+    return mysql.connector.connect(
+        user=os.getenv('PERSONAL_DATA_DB_USERNAME'),
+        password=os.getenv('PERSONAL_DATA_DB_PASSWORD'),
+        host=os.getenv('PERSONAL_DATA_DB_HOST'),
+        database=os.getenv('PERSONAL_DATA_DB_NAME'),
+    )
