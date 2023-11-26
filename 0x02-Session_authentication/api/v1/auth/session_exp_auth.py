@@ -9,7 +9,7 @@ class SessionExpAuth(SessionAuth):
     """Adds an expiration date to a Session ID."""
 
     def __init__(self) -> None:
-        super().__init__()
+        """Constructor"""
         SESSION_DURATION = getenv('SESSION_DURATION')
 
         try:
