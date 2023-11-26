@@ -2,7 +2,7 @@
 """Session Authentication Module"""
 
 from os import getenv
-from flask import jsonify, request
+from flask import abort, jsonify, request
 from api.v1.views import app_views
 from models.user import User
 
@@ -42,3 +42,19 @@ def login():
     response.set_cookie(SESSION_NAME, session_id)
 
     return response
+
+
+@app_views.route('/auth_session/logout',
+                 methods=['DELETE'], strict_slashes=False)
+def logout():
+    """ DELETE /api/v1/auth_session/logout
+    Return:
+      - Empty JSON
+    """
+    from api.v1.app import auth
+
+    gone = auth.destroy_session(request)
+    if not gone:
+        abort(404)
+
+    return jsonify({}), 200
